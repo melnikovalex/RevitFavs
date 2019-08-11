@@ -1,4 +1,4 @@
-﻿Example usage for T4 Docopt.NET
+﻿Commandline interface to manage Revit favourite places
 
 Usage:
   revitfavs list <revit_year>
@@ -11,3 +11,7 @@ Options:
   --version     Show version.
   --list     Show updated list after execution
   --preview  Show updated list but not write values into the registry
+
+Explanation:
+  If path, that you're trying to add, already exists it won't be updated until you using --update option. Use --replace to overwrite item on the same position.
+  To move or remove a place simply use index, path or title of it as <search_string>.

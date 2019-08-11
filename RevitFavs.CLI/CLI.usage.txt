@@ -1,0 +1,8 @@
+﻿Example usage for T4 Docopt.NET
+
+Usage:
+  revitfavs help
+  revitfavs list <revit_year>
+  revitfavs add <path> [<title>] [(start | end | <position>) --replace] <revit_year>
+  revitfavs move <search_string> (up | down | end | <position>) <revit_year>
+  revitfavs remove <search_string> <revit_year>

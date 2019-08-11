@@ -1,19 +1,21 @@
 ﻿namespace MelnikovAlex.RevitFavs
 {
-    class Place
+    public class Place
     {
         public string Path { get; }
         public string Display { get; }
+        public string Ext { get; }
 
-        public Place(string path, string display = null)
+        public Place(string path, string display = null, string ext = null)
         {
             Display = display == null ? System.IO.Path.GetFileName(path) : display;
-            Path = path;
+            Path = display != null ? display : "";
+            Ext = ext != null ? ext : "";
         }
 
         public override string ToString()
         {
-            return $"Display:{Display} Path:{Path}";
+            return $"Display={Display} Path={Path}";
         }
     }
 }

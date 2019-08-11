@@ -6,30 +6,22 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 namespace MelnikovAlex.RevitFavs
 {
-    class PlacesList
+    public class PlacesList
     {
-        Dictionary<int, Place> placesDict;
+        public Dictionary<int, Place> placesDict { get; private set; }
 
         public PlacesList()
         {
             placesDict = new Dictionary<int, Place>();
         }
 
-        public void Add(string registryKey, Place place)
-        {
-            int position = ParseRegistryKey(registryKey);
-            // In this case - -1 is invalid value
-            if (position == -1)
-                throw new ArgumentException("Cannot parse registryKey");
-            Add(place, position);
-        }
 
         public void Add(Place place, int position=-1, bool replace = false)
         {
             // in this case - -1 is the end of the list
-            if (position == -1)
+            if (position < 0)
             {
-                position = LastKey();
+                position = LastKey() + position + 1;
                 if (!replace)
                     position++;
             }
@@ -54,6 +46,9 @@ namespace MelnikovAlex.RevitFavs
 
         public int SearchForPosition(string searchString)
         {
+            if (searchString.Trim().Length == 0)
+                throw new ArgumentException("Search string seems to be empty");
+
             searchString = searchString.ToLower();
             foreach (var item in placesDict)
             {
@@ -70,7 +65,7 @@ namespace MelnikovAlex.RevitFavs
         public void Move(int oldPosition, int moveValue, bool shift = false, bool replace=false)
         {
             Place place = placesDict[oldPosition];
-            placesDict.Remove(oldPosition);
+            Remove(oldPosition);
             int newPosition = shift ? oldPosition + moveValue : moveValue;
             Add(place, newPosition, replace);
         }
@@ -98,20 +93,8 @@ namespace MelnikovAlex.RevitFavs
         {
             return placesDict.Keys.Max();
         }
-        private int ParseRegistryKey(string key)
-        {
-            Match match = Regex.Match(key, Connector.keyMask);
-            if (match.Success)
-            {
-                if (Int32.TryParse(match.Groups[1].Value, out int result))
-                {
-                    return result;
-                }
-            }
-            return -1;
-        }
 
-        private bool VerifySequence()
+        public bool ValidateSequence()
         {
             List<int> sortedKeys = placesDict.Keys.ToList();
             sortedKeys.Sort();
@@ -128,12 +111,28 @@ namespace MelnikovAlex.RevitFavs
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            foreach (var item in placesDict)
+            List<int> keys = placesDict.Keys.ToList();
+            keys.Sort();
+            foreach (int key in keys)
             {
-                sb.AppendLine($"{item.Key} {item.Value}");
+                Place place = placesDict[key];
+                sb.AppendLine($"{key} {place}");
 
             }
             return sb.ToString();
+        }
+
+        public static int ParseRegistryKey(string key)
+        {
+            Match match = Regex.Match(key, Connector.keyRegex);
+            if (match.Success)
+            {
+                if (Int32.TryParse(match.Groups[1].Value, out int result))
+                {
+                    return result;
+                }
+            }
+            return -1;
         }
     }
 }

@@ -9,7 +9,7 @@
         public Place(string path, string display = null, string ext = null)
         {
             Display = display == null ? System.IO.Path.GetFileName(path) : display;
-            Path = display != null ? display : "";
+            Path = path != null ? path : "";
             Ext = ext != null ? ext : "";
         }
 
